@@ -1,0 +1,62 @@
+Options { path: "benchmarks/fibonacci_20.zok", frontend: FrontendOptions { language: Auto, value_threshold: None }, circ: CircOpt { r1cs: R1csOpt { verified: false, profile: false, div_by_zero: Incomplete, lc_elim_thresh: 50 }, field: FieldOpt { builtin: Bls12381, custom_modulus: "" }, ir: IrOpt { field_to_bv: Wrap, frequent_gc: false }, ram: RamOpt { enabled: false, range: Sort, index: Uniqueness, permutation: Msh }, fmt: FmtOpt { use_default_field: true, hide_field: false }, zsharp: ZsharpOpt { isolate_asserts: false }, datalog: DatalogOpt { rec_limit: 5, lint_prim_rec: false }, c: COpt { sv_functions: false, assert_no_ub: false } }, parties: 2, backend: R1cs { prover_key: "P", verifier_key: "V", lc_elimination_thresh: 50, action: Count, proof_impl: Groth16 } }
+Done with IR optimization
+key: main
+Converting to r1cs
+(computation 
+(metadata
+  (parties  prover verifier)
+
+  (inputs
+    (return (bv 32))
+    (r (bv 32) (party 0))
+  )
+  (commitments
+  )
+)
+(precompute (
+)(
+ (return (bv 32))
+)
+
+  (declare
+ (
+ )
+ (let
+  (
+   ('0 (bvadd #b00000000000000000000000000000000 #b00000000000000000000000000000001))
+   ('1 (bvadd #b00000000000000000000000000000001 '0))
+   ('2 (bvadd '0 '1))
+   ('3 (bvadd '1 '2))
+   ('4 (bvadd '2 '3))
+   ('5 (bvadd '3 '4))
+   ('6 (bvadd '4 '5))
+   ('7 (bvadd '5 '6))
+   ('8 (bvadd '6 '7))
+   ('9 (bvadd '7 '8))
+   ('10 (bvadd '8 '9))
+   ('11 (bvadd '9 '10))
+   ('12 (bvadd '10 '11))
+   ('13 (bvadd '11 '12))
+   ('14 (bvadd '12 '13))
+   ('15 (bvadd '13 '14))
+   ('16 (bvadd '14 '15))
+  )
+  
+(tuple (bvadd '16 (bvadd '15 '16))))
+)
+
+
+)
+
+
+  (declare
+ (
+  (return (bv 32))
+ )
+(= #b00000000000000000001101001101101 return))
+
+
+)
+
+Pre-opt R1cs size: 1
+Final R1cs size: 1

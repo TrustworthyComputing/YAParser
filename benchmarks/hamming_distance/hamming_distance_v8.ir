@@ -1,0 +1,54 @@
+Options { path: "benchmarks/hamming_distance_v8.zok", frontend: FrontendOptions { language: Auto, value_threshold: None }, circ: CircOpt { r1cs: R1csOpt { verified: false, profile: false, div_by_zero: Incomplete, lc_elim_thresh: 50 }, field: FieldOpt { builtin: Bls12381, custom_modulus: "" }, ir: IrOpt { field_to_bv: Wrap, frequent_gc: false }, ram: RamOpt { enabled: false, range: Sort, index: Uniqueness, permutation: Msh }, fmt: FmtOpt { use_default_field: true, hide_field: false }, zsharp: ZsharpOpt { isolate_asserts: false }, datalog: DatalogOpt { rec_limit: 5, lint_prim_rec: false }, c: COpt { sv_functions: false, assert_no_ub: false } }, parties: 2, backend: R1cs { prover_key: "P", verifier_key: "V", lc_elimination_thresh: 50, action: Count, proof_impl: Groth16 } }
+Done with IR optimization
+key: main
+Converting to r1cs
+(computation 
+(metadata
+  (parties  prover verifier)
+
+  (inputs
+    (return (bv 8))
+  )
+  (commitments
+  )
+)
+(precompute (
+)(
+ (return (bv 8))
+)
+
+  (declare
+ (
+ )
+ (let
+  (
+   ('0 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) #b00000111))
+   ('1 ((array (mod 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bv 8)) #b00000001 #b00000010 #b00000011 #b00000100 #b00000101 #b00000110 #b00000111 #b00000001))
+   ('2 ((array (mod 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bv 8)) #b00000001 #b00000001 #b00000011 #b00000011 #b00000101 #b00000110 #b00000111 #b00000000))
+   ('3 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) #b00000110))
+   ('4 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) #b00000101))
+   ('5 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) #b00000100))
+   ('6 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) #b00000011))
+   ('7 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) #b00000010))
+   ('8 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) #b00000001))
+   ('9 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) #b00000000))
+  )
+  
+(tuple (bvadd (bvadd (bvadd (bvadd (bvadd (bvadd (bvadd (bvadd #b00000000 (ite (not (= (select '2 '9) (select '1 '9))) #b00000001 #b00000000)) (ite (not (= (select '2 '8) (select '1 '8))) #b00000001 #b00000000)) (ite (not (= (select '2 '7) (select '1 '7))) #b00000001 #b00000000)) (ite (not (= (select '2 '6) (select '1 '6))) #b00000001 #b00000000)) (ite (not (= (select '2 '5) (select '1 '5))) #b00000001 #b00000000)) (ite (not (= (select '2 '4) (select '1 '4))) #b00000001 #b00000000)) (ite (not (= (select '2 '3) (select '1 '3))) #b00000001 #b00000000)) (ite (not (= (select '2 '0) (select '1 '0))) #b00000001 #b00000000))))
+)
+
+
+)
+
+
+  (declare
+ (
+  (return (bv 8))
+ )
+(= #b00000011 return))
+
+
+)
+
+Pre-opt R1cs size: 1
+Final R1cs size: 1

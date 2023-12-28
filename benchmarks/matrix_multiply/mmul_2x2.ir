@@ -1,0 +1,75 @@
+Options { path: "benchmarks/mmul_2x2.zok", frontend: FrontendOptions { language: Auto, value_threshold: None }, circ: CircOpt { r1cs: R1csOpt { verified: false, profile: false, div_by_zero: Incomplete, lc_elim_thresh: 50 }, field: FieldOpt { builtin: Bls12381, custom_modulus: "" }, ir: IrOpt { field_to_bv: Wrap, frequent_gc: false }, ram: RamOpt { enabled: false, range: Sort, index: Uniqueness, permutation: Msh }, fmt: FmtOpt { use_default_field: true, hide_field: false }, zsharp: ZsharpOpt { isolate_asserts: false }, datalog: DatalogOpt { rec_limit: 5, lint_prim_rec: false }, c: COpt { sv_functions: false, assert_no_ub: false } }, parties: 2, backend: R1cs { prover_key: "P", verifier_key: "V", lc_elimination_thresh: 50, action: Count, proof_impl: Groth16 } }
+Done with IR optimization
+key: main
+Converting to r1cs
+(computation 
+(metadata
+  (parties  prover verifier)
+
+  (inputs
+    (return.3 (bv 8))
+    (return.1 (bv 8))
+    (return.2 (bv 8))
+    (return.0 (bv 8))
+  )
+  (commitments
+  )
+)
+(precompute (
+)(
+ (return.0 (bv 8))
+ (return.1 (bv 8))
+ (return.2 (bv 8))
+ (return.3 (bv 8))
+)
+
+  (set_default_modulus 52435875175126190479447740508185965837690552500527637822603658699938581184513
+(declare
+ (
+ )
+ (let
+  (
+   ('0 (bvmul #b00000001 #b00000010))
+   ('1 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '0 #b00000001)))
+   ('2 ((array (mod 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bv 8)) #b00000001 #b00000010 #b00000011 #b00000100))
+   ('3 (select '2 '1))
+   ('4 (bvmul #b00000000 #b00000010))
+   ('5 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '4 #b00000001)))
+   ('6 (select '2 '5))
+   ('7 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '0 #b00000000)))
+   ('8 (select '2 '7))
+   ('9 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '4 #b00000000)))
+   ('10 (select '2 '9))
+   ('11 ((array (mod 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bv 8)) #b00000000 #b00000000 #b00000000 #b00000000))
+   ('12 (store '11 '9 (bvadd (select '11 '9) (bvmul '10 '10))))
+   ('13 (store '12 '9 (bvadd (select '12 '9) (bvmul '6 '8))))
+   ('14 (store '13 '5 (bvadd (select '13 '5) (bvmul '10 '6))))
+   ('15 (store '14 '5 (bvadd (select '14 '5) (bvmul '6 '3))))
+   ('16 (store '15 '7 (bvadd (select '15 '7) (bvmul '8 '10))))
+   ('17 (store '16 '7 (bvadd (select '16 '7) (bvmul '3 '8))))
+   ('18 (store '17 '1 (bvadd (select '17 '1) (bvmul '8 '6))))
+   ('19 (store '18 '1 (bvadd (select '18 '1) (bvmul '3 '3))))
+  )
+  
+(tuple (select '19 #f0) (select '19 #f1) (select '19 #f2) (select '19 #f3)))
+)
+)
+
+
+)
+
+
+  (declare
+ (
+  (return.3 (bv 8))
+  (return.1 (bv 8))
+  (return.2 (bv 8))
+  (return.0 (bv 8))
+ )
+(and (= #b00000111 return.0) (= #b00001111 return.2) (= #b00001010 return.1) (= #b00010110 return.3)))
+
+
+)
+
+Pre-opt R1cs size: 4
+Final R1cs size: 4

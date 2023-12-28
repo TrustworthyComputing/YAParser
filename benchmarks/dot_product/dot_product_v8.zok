@@ -1,0 +1,12 @@
+def main() -> u32:
+
+    u32[8] a = [ 10, 15, 3,  9, 11, 13, 12, 10]
+    u32[8] b = [ 3, 10, 11, 11, 12, 12, 10, 10]
+    u32 res = 0
+    
+    for u32 i in 0..8 do
+    res = res + (a[i]) * (b[i])
+    endfor
+    
+    return res
+  

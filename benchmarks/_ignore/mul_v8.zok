@@ -1,0 +1,11 @@
+def main() -> u32:
+
+    u32 max = 9
+    u32 sum = 1
+    
+    for u32 i in 1..max do
+    sum = sum * i
+    endfor
+    
+    return sum
+

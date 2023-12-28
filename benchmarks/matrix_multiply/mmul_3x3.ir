@@ -1,0 +1,130 @@
+Options { path: "benchmarks/mmul_3x3.zok", frontend: FrontendOptions { language: Auto, value_threshold: None }, circ: CircOpt { r1cs: R1csOpt { verified: false, profile: false, div_by_zero: Incomplete, lc_elim_thresh: 50 }, field: FieldOpt { builtin: Bls12381, custom_modulus: "" }, ir: IrOpt { field_to_bv: Wrap, frequent_gc: false }, ram: RamOpt { enabled: false, range: Sort, index: Uniqueness, permutation: Msh }, fmt: FmtOpt { use_default_field: true, hide_field: false }, zsharp: ZsharpOpt { isolate_asserts: false }, datalog: DatalogOpt { rec_limit: 5, lint_prim_rec: false }, c: COpt { sv_functions: false, assert_no_ub: false } }, parties: 2, backend: R1cs { prover_key: "P", verifier_key: "V", lc_elimination_thresh: 50, action: Count, proof_impl: Groth16 } }
+Done with IR optimization
+key: main
+Converting to r1cs
+(computation 
+(metadata
+  (parties  prover verifier)
+
+  (inputs
+    (return.0 (bv 8))
+    (return.1 (bv 8))
+    (return.2 (bv 8))
+    (return.3 (bv 8))
+    (return.7 (bv 8))
+    (return.8 (bv 8))
+    (return.4 (bv 8))
+    (return.5 (bv 8))
+    (return.6 (bv 8))
+  )
+  (commitments
+  )
+)
+(precompute (
+)(
+ (return.0 (bv 8))
+ (return.1 (bv 8))
+ (return.2 (bv 8))
+ (return.3 (bv 8))
+ (return.4 (bv 8))
+ (return.5 (bv 8))
+ (return.6 (bv 8))
+ (return.7 (bv 8))
+ (return.8 (bv 8))
+)
+
+  (set_default_modulus 52435875175126190479447740508185965837690552500527637822603658699938581184513
+(declare
+ (
+ )
+ (let
+  (
+   ('0 (bvmul #b00000010 #b00000011))
+   ('1 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '0 #b00000010)))
+   ('2 ((array (mod 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bv 8)) #b00000001 #b00000010 #b00000011 #b00000100 #b00000001 #b00000010 #b00000011 #b00000100 #b00000001))
+   ('3 (select '2 '1))
+   ('4 ((array (mod 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bv 8)) #b00000001 #b00000010 #b00000011 #b00000100 #b00000100 #b00000011 #b00000010 #b00000001 #b00000100))
+   ('5 (select '4 '1))
+   ('6 (bvmul #b00000001 #b00000011))
+   ('7 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '6 #b00000010)))
+   ('8 (select '2 '7))
+   ('9 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '0 #b00000001)))
+   ('10 (select '4 '9))
+   ('11 (bvmul #b00000000 #b00000011))
+   ('12 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '11 #b00000010)))
+   ('13 (select '2 '12))
+   ('14 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '0 #b00000000)))
+   ('15 (select '4 '14))
+   ('16 (select '2 '9))
+   ('17 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '6 #b00000001)))
+   ('18 (select '2 '17))
+   ('19 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '11 #b00000001)))
+   ('20 (select '2 '19))
+   ('21 (select '2 '14))
+   ('22 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '6 #b00000000)))
+   ('23 (select '2 '22))
+   ('24 ((bv2pf 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bvadd '11 #b00000000)))
+   ('25 (select '2 '24))
+   ('26 (select '4 '7))
+   ('27 (select '4 '17))
+   ('28 (select '4 '22))
+   ('29 (select '4 '12))
+   ('30 (select '4 '19))
+   ('31 (select '4 '24))
+   ('32 ((array (mod 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bv 8)) #b00000000 #b00000000 #b00000000 #b00000000 #b00000000 #b00000000 #b00000000 #b00000000 #b00000000))
+   ('33 (store '32 '24 (bvadd (select '32 '24) (bvmul '31 '25))))
+   ('34 (store '33 '24 (bvadd (select '33 '24) (bvmul '30 '23))))
+   ('35 (store '34 '24 (bvadd (select '34 '24) (bvmul '29 '21))))
+   ('36 (store '35 '19 (bvadd (select '35 '19) (bvmul '31 '20))))
+   ('37 (store '36 '19 (bvadd (select '36 '19) (bvmul '30 '18))))
+   ('38 (store '37 '19 (bvadd (select '37 '19) (bvmul '29 '16))))
+   ('39 (store '38 '12 (bvadd (select '38 '12) (bvmul '31 '13))))
+   ('40 (store '39 '12 (bvadd (select '39 '12) (bvmul '30 '8))))
+   ('41 (store '40 '12 (bvadd (select '40 '12) (bvmul '29 '3))))
+   ('42 (store '41 '22 (bvadd (select '41 '22) (bvmul '28 '25))))
+   ('43 (store '42 '22 (bvadd (select '42 '22) (bvmul '27 '23))))
+   ('44 (store '43 '22 (bvadd (select '43 '22) (bvmul '26 '21))))
+   ('45 (store '44 '17 (bvadd (select '44 '17) (bvmul '28 '20))))
+   ('46 (store '45 '17 (bvadd (select '45 '17) (bvmul '27 '18))))
+   ('47 (store '46 '17 (bvadd (select '46 '17) (bvmul '26 '16))))
+   ('48 (store '47 '7 (bvadd (select '47 '7) (bvmul '28 '13))))
+   ('49 (store '48 '7 (bvadd (select '48 '7) (bvmul '27 '8))))
+   ('50 (store '49 '7 (bvadd (select '49 '7) (bvmul '26 '3))))
+   ('51 (store '50 '14 (bvadd (select '50 '14) (bvmul '15 '25))))
+   ('52 (store '51 '14 (bvadd (select '51 '14) (bvmul '10 '23))))
+   ('53 (store '52 '14 (bvadd (select '52 '14) (bvmul '5 '21))))
+   ('54 (store '53 '9 (bvadd (select '53 '9) (bvmul '15 '20))))
+   ('55 (store '54 '9 (bvadd (select '54 '9) (bvmul '10 '18))))
+   ('56 (store '55 '9 (bvadd (select '55 '9) (bvmul '5 '16))))
+   ('57 (store '56 '1 (bvadd (select '56 '1) (bvmul '15 '13))))
+   ('58 (store '57 '1 (bvadd (select '57 '1) (bvmul '10 '8))))
+   ('59 (store '58 '1 (bvadd (select '58 '1) (bvmul '5 '3))))
+  )
+  
+(tuple (select '59 #f0) (select '59 #f1) (select '59 #f2) (select '59 #f3) (select '59 #f4) (select '59 #f5) (select '59 #f6) (select '59 #f7) (select '59 #f8)))
+)
+)
+
+
+)
+
+
+  (declare
+ (
+  (return.5 (bv 8))
+  (return.0 (bv 8))
+  (return.6 (bv 8))
+  (return.1 (bv 8))
+  (return.7 (bv 8))
+  (return.2 (bv 8))
+  (return.8 (bv 8))
+  (return.3 (bv 8))
+  (return.4 (bv 8))
+ )
+(and (= #b00011000 return.4) (= #b00011101 return.3) (= #b00001100 return.8) (= #b00001010 return.2) (= #b00010101 return.7) (= #b00010000 return.1) (= #b00010010 return.6) (= #b00010010 return.0) (= #b00010111 return.5)))
+
+
+)
+
+Pre-opt R1cs size: 9
+Final R1cs size: 9

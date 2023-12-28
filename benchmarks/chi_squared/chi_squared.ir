@@ -1,0 +1,59 @@
+Options { path: "benchmarks/chi_squared_1.zok", frontend: FrontendOptions { language: Auto, value_threshold: None }, circ: CircOpt { r1cs: R1csOpt { verified: false, profile: false, div_by_zero: Incomplete, lc_elim_thresh: 50 }, field: FieldOpt { builtin: Bls12381, custom_modulus: "" }, ir: IrOpt { field_to_bv: Wrap, frequent_gc: false }, ram: RamOpt { enabled: false, range: Sort, index: Uniqueness, permutation: Msh }, fmt: FmtOpt { use_default_field: true, hide_field: false }, zsharp: ZsharpOpt { isolate_asserts: false }, datalog: DatalogOpt { rec_limit: 5, lint_prim_rec: false }, c: COpt { sv_functions: false, assert_no_ub: false } }, parties: 2, backend: R1cs { prover_key: "P", verifier_key: "V", lc_elimination_thresh: 50, action: Count, proof_impl: Groth16 } }
+Done with IR optimization
+key: main
+Converting to r1cs
+(computation 
+(metadata
+  (parties  prover verifier)
+
+  (inputs
+    (return.3 (bv 32))
+    (return.1 (bv 32))
+    (return.2 (bv 32))
+    (return.0 (bv 32))
+  )
+  (commitments
+  )
+)
+(precompute (
+)(
+ (return.0 (bv 32))
+ (return.1 (bv 32))
+ (return.2 (bv 32))
+ (return.3 (bv 32))
+)
+
+  (set_default_modulus 52435875175126190479447740508185965837690552500527637822603658699938581184513
+(declare
+ (
+ )
+ (let
+  (
+   ('0 (bvadd (bvmul #b00000000000000000000000000000010 #b00000000000000000000000000001001) #b00000000000000000000000000000111))
+   ('1 (bvadd (bvmul #b00000000000000000000000000000010 #b00000000000000000000000000000010) #b00000000000000000000000000000111))
+   ('2 (bvsub (bvmul (bvmul #b00000000000000000000000000000100 #b00000000000000000000000000000010) #b00000000000000000000000000001001) (bvmul #b00000000000000000000000000000111 #b00000000000000000000000000000111)))
+   ('3 ((array (mod 52435875175126190479447740508185965837690552500527637822603658699938581184513) (bv 32)) (bvmul '2 '2) (bvmul (bvmul '1 '1) #b00000000000000000000000000000010) (bvmul '1 '0) (bvmul '0 #b00000000000000000000000000000010)))
+  )
+  
+(tuple (select '3 #f0) (select '3 #f1) (select '3 #f2) (select '3 #f3)))
+)
+)
+
+
+)
+
+
+  (declare
+ (
+  (return.1 (bv 32))
+  (return.2 (bv 32))
+  (return.0 (bv 32))
+  (return.3 (bv 32))
+ )
+(and (= #b00000000000000000000000000110010 return.3) (= #b00000000000000000000001000010001 return.0) (= #b00000000000000000000000100010011 return.2) (= #b00000000000000000000000011110010 return.1)))
+
+
+)
+
+Pre-opt R1cs size: 4
+Final R1cs size: 4

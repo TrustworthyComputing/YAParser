@@ -1,0 +1,39 @@
+Options { path: "benchmarks/mul_v8.zok", frontend: FrontendOptions { language: Auto, value_threshold: None }, circ: CircOpt { r1cs: R1csOpt { verified: false, profile: false, div_by_zero: Incomplete, lc_elim_thresh: 50 }, field: FieldOpt { builtin: Bls12381, custom_modulus: "" }, ir: IrOpt { field_to_bv: Wrap, frequent_gc: false }, ram: RamOpt { enabled: false, range: Sort, index: Uniqueness, permutation: Msh }, fmt: FmtOpt { use_default_field: true, hide_field: false }, zsharp: ZsharpOpt { isolate_asserts: false }, datalog: DatalogOpt { rec_limit: 5, lint_prim_rec: false }, c: COpt { sv_functions: false, assert_no_ub: false } }, parties: 2, backend: R1cs { prover_key: "P", verifier_key: "V", lc_elimination_thresh: 50, action: Count, proof_impl: Groth16 } }
+Done with IR optimization
+key: main
+Converting to r1cs
+(computation 
+(metadata
+  (parties  prover verifier)
+
+  (inputs
+    (return (bv 32))
+  )
+  (commitments
+  )
+)
+(precompute (
+)(
+ (return (bv 32))
+)
+
+  (declare
+ (
+ )
+(tuple (bvmul (bvmul (bvmul (bvmul (bvmul (bvmul (bvmul (bvmul #b00000000000000000000000000000001 #b00000000000000000000000000000001) #b00000000000000000000000000000010) #b00000000000000000000000000000011) #b00000000000000000000000000000100) #b00000000000000000000000000000101) #b00000000000000000000000000000110) #b00000000000000000000000000000111) #b00000000000000000000000000001000)))
+
+
+)
+
+
+  (declare
+ (
+  (return (bv 32))
+ )
+(= #b00000000000000001001110110000000 return))
+
+
+)
+
+Pre-opt R1cs size: 1
+Final R1cs size: 1

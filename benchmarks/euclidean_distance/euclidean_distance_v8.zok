@@ -1,0 +1,14 @@
+def main() -> u32:
+
+    u32[8] v = [ 10, 15, 3,  9, 11, 13, 12, 10]
+    u32[8] u = [ 3, 10, 11, 11, 12, 12, 10, 10]
+    u32 dist = 0
+    u32 d = 0
+    
+    for u32 i in 0..8 do
+    d = (v[i]) - (u[i])
+    dist = dist + (d * d)
+    endfor
+    
+    return dist
+  

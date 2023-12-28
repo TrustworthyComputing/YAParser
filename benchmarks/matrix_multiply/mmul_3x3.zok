@@ -1,0 +1,33 @@
+def main() -> u8[9]:
+
+    
+    u8[9] v = [1, 2, 3, 4, 4, 3, 2, 1, 4]
+    u8[9] u = [1, 2, 3, 4, 1, 2, 3, 4, 1]
+    u8[9] res = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    
+    u8 r1 = 3
+    u8 r2 = 3
+    u8 c2 = 3
+    
+    for u8 i in 0..r1 do
+    
+    u8 i_r1 = i * r1
+    u8 i_c1 = i * r2
+    
+    for u8 j in 0..c2 do
+    for u8 k in 0..r2 do
+    
+    u8 k_c2 =  k * c2
+    
+    u8 res_ind = i_r1 +j
+    u8 v_ind = i_c1 + k 
+    u8 u_ind = k_c2 + j
+    
+    
+    res[res_ind] = res[res_ind] + v[v_ind] * u[u_ind]
+    endfor
+    endfor 
+    endfor
+    
+    return res
+

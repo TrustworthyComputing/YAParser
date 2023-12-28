@@ -1,0 +1,14 @@
+def main(private u32 r) -> u32:
+    u32 f=0
+    u32 w=0
+    u32 x=1
+    
+    for u32 i in 2..129 do
+    	f = w + x
+    	w = x
+    	x = f
+    endfor
+    
+    r = f
+    return r
+
