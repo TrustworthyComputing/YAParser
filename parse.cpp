@@ -358,8 +358,7 @@ private:
                 }
                     /// This indicates an array access
                 else if (tokens[0] == "select") {
-                    if (tokens_size ==
-                        2) { /// It means that we will read array label from the tokens, but the value index is read from the eval_table.
+                    if (tokens_size == 2) { /// It means that we will read array label from the tokens, but the value index is read from the eval_table.
                         /// because the index in this case is computed during previous instructions.
                         string top = pending.top();
                         top = top.substr(1, top.size());
@@ -391,10 +390,10 @@ private:
                             op2_indx = vars_indx[op2_lbl];
                             op2_tmp = "$r" + to_string(op2_indx);
                             /// Switch the order of the operands, so we pop the first operand then the second.
-                            string tmp_op1 = pending.top();
-                            pending.pop();
+                            //string tmp_op1 = pending.top();
+                            //pending.pop();
                             pending.push(op2_tmp);
-                            pending.push(tmp_op1);
+                            //pending.push(tmp_op1);
                             res_indx = op2_indx;
                         }
                     }
@@ -597,14 +596,18 @@ private:
                     /// This is considered operand2
                     string next = pending.top();
                     pending.pop();
+                    /***This is part was errorouns!*/
                     /// read from the letter "r" until the ":" symbol
-                    next = next.substr(1, next.find(":"));
+                    ///next = next.substr(1, next.find(":"));
+                    /***END*/
+                    //Trim the $ and r
+                    next = next.substr(1, next.size());
                     res_indx = vars_cntr;
                     cir_print +=
                             "$r" + to_string(res_indx) + " := " + next + " " + op + " r" + to_string(op1_indx) + "\n";
 
                     string tmp1 = "r" + to_string(res_indx);
-                    string tmp2 = "r" + next;
+                    string tmp2 = next; //"r" + next;
                     string tmp3 = "r" + to_string(op1_indx);
 
                     if (eval_table.find(tmp2) != eval_table.end()) {
