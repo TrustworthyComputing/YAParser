@@ -39,7 +39,8 @@ bool is_number(const string &s) {
     return !s.empty() && it == s.end();
 }
 
-class Parser {
+class Parser
+{
 private:
     /// a map of string and integer to keep track of the indices of the variables to be defined.
     map<string, int> vars_indx;
@@ -99,12 +100,21 @@ private:
     /// A flag to indicate if we processing if-then-else statement.
     bool ite_flg = 0;
 
-    vector<string> split(string str, char separator) {
+    // This used for arrays that are defined inline with `store` opereation
+    string last_array_lbl;
+
+    //This to handle the new array name (typically, the index number of the line) after the store instruction.
+    map<string, string> array_nickname;
+
+    vector<string> split(string str, char separator)
+    {
         vector<string> tokens;
         int startIndex = 0, endIndex = 0;
-        for (int i = 0; i <= str.size(); i++) {
+        for (int i = 0; i <= str.size(); i++)
+        {
             // If we reached the end of the word or the end of the input.
-            if (str[i] == separator || i == str.size()) {
+            if (str[i] == separator || i == str.size())
+            {
                 endIndex = i;
                 string temp;
                 temp.append(str, startIndex, endIndex - startIndex);
@@ -115,45 +125,54 @@ private:
         return tokens;
     }
 
-    bool isStringEmptyOrWhitespace(const std::string &str) {
+    bool isStringEmptyOrWhitespace(const std::string &str)
+    {
         // Check if the string is empty
-        if (str.empty()) {
+        if (str.empty())
+        {
             return true;
         }
 
         // Check if all characters in the string are whitespace
-        return std::all_of(str.begin(), str.end(), [](unsigned char ch) { return std::isspace(ch); });
+        return std::all_of(str.begin(), str.end(), [](unsigned char ch)
+        { return std::isspace(ch); });
     }
-
     /**
      * Reads the IR file and returns the tuple block.
      * @param filename the IR file name.
      * */
-    string readTuple(const string &filename) {
+    string readTuple(const string &filename)
+    {
         string srch = "(tuple";
         string line;
         fstream file;
         file.open(filename, ios::in);
 
-        if (file.is_open()) {
-            while (getline(file, line)) {
-                if (line.find(srch) != string::npos) {
+        if (file.is_open())
+        {
+            while (getline(file, line))
+            {
+                if (line.find(srch) != string::npos)
+                {
                     return line;
                 }
             }
-        } else
+        }
+        else
             cout << "Couldn't access the file\n";
         return "";
     }
 
-    auto fromString(std::string str) {
+    auto fromString(std::string str)
+    {
         std::vector<std::string> elements;
 
         std::regex r{R"([<\[" ]?([^<>\[\]" =\x0a\x0d]+)[>\[" ]?)"};
         std::istringstream iss(str);
         auto it = std::sregex_iterator(str.begin(), str.end(), r);
         auto end = std::sregex_iterator();
-        for (; it != end; ++it) {
+        for (; it != end; ++it)
+        {
             auto match = *it;
             auto element = match[1].str().append(" ");
             elements.push_back(element);
@@ -165,21 +184,27 @@ private:
      * Remove the parentheses from a string.
      * @param in the input string.
      * */
-    string strip_parentheses(string in) {
-        for (int i = 0; i < in.size(); i++) {
-            if (in[0] == '(') {
+    string strip_parentheses(string in)
+    {
+        for (int i = 0; i < in.size(); i++)
+        {
+            if (in[0] == '(')
+            {
                 in = in.substr(1, in.size());
             }
         }
-        for (int i = 0; i < in.size(); i++) {
-            if (in[in.size() - 1] == ')') {
+        for (int i = 0; i < in.size(); i++)
+        {
+            if (in[in.size() - 1] == ')')
+            {
                 in = in.substr(0, in.size() - 1);
             }
         }
         return in;
     }
 
-    bool is_number(const string &s) {
+    bool is_number(const string &s)
+    {
         string::const_iterator it = s.begin();
         while (it != s.end() && isdigit(*it))
             ++it;
@@ -190,7 +215,8 @@ private:
      * Reads the IR file and returns the let block.
      * @param filename the IR file name.
      * */
-    vector<string> readLet(string filename) {
+    vector<string> readLet(string filename)
+    {
         string srch = " (let";
         string line;
         fstream file;
@@ -200,21 +226,28 @@ private:
         int brk;
         file.open(filename, ios::in);
 
-        if (file.is_open()) {
-            while (getline(file, line)) {
-                if (line == srch) {
+        if (file.is_open())
+        {
+            while (getline(file, line))
+            {
+                if (line == srch)
+                {
                     found = 1;
                 }
-                if (found) {
-                    while (getline(file, l)) {
-                        if (l.find("tuple") != string::npos) {
+                if (found)
+                {
+                    while (getline(file, l))
+                    {
+                        if (l.find("tuple") != string::npos)
+                        {
                             return res;
                         }
                         res.push_back(l);
                     }
                 }
             }
-        } else
+        }
+        else
             cout << "Couldn't access the file\n";
         return res;
     }
@@ -223,7 +256,8 @@ private:
      * Parse the let block.
      * @param filename the IR file name.
      * */
-    string parse_let(string filename) {
+    string parse_let(string filename)
+    {
         /// A stack for parsing nested operations between parentheses.
         stack<string> st;
         /// A temp variable.
@@ -233,7 +267,8 @@ private:
         vector<string> vec = readLet(filename);
 
         /// If the vector is empty, then there is no Let block.
-        if (vec.empty()) {
+        if (vec.empty())
+        {
             return "";
         }
         /// The first element is "(", which is useless.
@@ -246,14 +281,17 @@ private:
         stack<string> pending;
 
         /// Process each line from the vector. Each line can include more than one instruction.
-        for (auto line: vec) {
+        for (auto line : vec)
+        {
             s = line;
             /// Remove the spaces at the beginning and at the end of the instruction.
             boost::trim(s);
 
             /// This loop is for processing nested parentheses and extracting the inner most operation
-            for (char const c: s) {
-                if (c == '(') {
+            for (char const c : s)
+            {
+                if (c == '(')
+                {
                     st.push(string(&c, 1));
                     continue;
                 }
@@ -262,14 +300,16 @@ private:
                 st.top() += c;
 
                 /// Once we encounter a ")", it means we got an instruction. Push the instruction into the isnt vector.
-                if (c == ')') {
+                if (c == ')')
+                {
                     // cout << st.top() << endl;
                     inst.push_back(st.top());
                     st.pop();
                 }
             }
 
-            for (string line: inst) {
+            for (string line : inst)
+            {
                 /// Remove the parentheses from the instruction
                 line = strip_parentheses(line);
                 /// Remove extra spaces between the instruction's tokens.
@@ -281,20 +321,30 @@ private:
                 size_t tokens_size = tokens.size();
 
                 /// Get the operation
-                if (tokens[0] == "bvmul") {
+                if (tokens[0] == "bvmul")
+                {
                     op = "*";
-                } else if (tokens[0] == "bvadd") {
+                }
+                else if (tokens[0] == "bvadd")
+                {
                     op = "+";
-                } else if (tokens[0] == "bvsub") {
+                }
+                else if (tokens[0] == "bvsub")
+                {
                     op = "-";
                 }
                     /// This means that we are storing array variables into the vars_indx to be used during next operations.
-                else if (tokens[0][0] == '#' && arr_flag) {
+                else if (tokens[0][0] == '#' && arr_flag)
+                {
                     /// Get the array label (e.g., '0, '1, etc..)
                     string indx_lbl = removeSpaces(strip_parentheses(inst[inst.size() - 1]));
+                    last_array_lbl = indx_lbl;
                     string tmp = indx_lbl;
+                    array_nickname[tmp] = tmp;
+
                     /// Iterate over the array elements
-                    for (int i = 0; i < tokens.size(); i++) {
+                    for (int i = 0; i < tokens.size(); i++)
+                    {
                         /// Convert the binary string to integer
                         string val = tokens[i];
                         int int_val = stoi(val.substr(2, val.size()), nullptr, 2);
@@ -313,16 +363,20 @@ private:
                     }
                     /// Now we are done with array, set the flag to false.
                     arr_flag = false;
-                    break;
+                    // break;
+                    continue;
                 }
                     /// It may not be an operation, rather an index to store a value or
                     /// a result of a computation
-                else if (tokens[0][0] == '\'') {
+                else if (tokens[0][0] == '\'')
+                {
                     res_indx_tmp = tokens[0];
-                } else if (tokens[0] == "bv2pf") {
+                }
+                else if (tokens[0] == "bv2pf")
+                {
 
-                    if (inst.size() ==
-                        3) { /// In case we have ('0 ((bv2pf plapla) #b0101)), we are storing a value at an index
+                    if (inst.size() == 3)
+                    { /// In case we have ('0 ((bv2pf plapla) #b0101)), we are storing a value at an index
                         /// get the array index
                         string indx_val = strip_parentheses(inst[1]);
                         boost::trim(indx_val);
@@ -330,35 +384,47 @@ private:
                         arr_indx[indx_lbl_arr_indx] = stoi(indx_val.substr(2, indx_val.size()), nullptr, 2);
                         /// Skip the rest as the next token is a modulu number.
                         break;
-                    } else if (inst.size() == 5 || inst.size() == 4) {
+                    }
+                    else if (inst.size() == 5 || inst.size() == 4)
+                    {
                         bool is_select = false;
-                        for (auto stmt: inst) {
-                            if (stmt.find("select") != string::npos) {
+                        for (auto stmt : inst)
+                        {
+                            if (stmt.find("select") != string::npos)
+                            {
                                 is_select = true;
                                 break;
                             }
                         }
-                        if (!is_select) {
+                        if (!is_select)
+                        {
                             indx_lbl_arr_indx = inst[inst.size() - 1];
                             indx_lbl_arr_indx = removeSpaces(strip_parentheses(indx_lbl_arr_indx));
                             next_is_indx = true;
                         }
                         continue;
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Unknown instruction pattern!" << endl;
                         exit(5);
                     }
                 } /// Useless for the current application
-                else if (tokens[0] == "mod" || tokens[0] == "bv") {
+                else if (tokens[0] == "mod" || tokens[0] == "bv")
+                {
                     continue;
                 } /// Set the flag to indicate that the next step is to store the array elements.
-                else if (tokens[0] == "array") {
+                else if (tokens[0] == "array")
+                {
+                    first_store_inst = true;
                     arr_flag = true;
                     continue;
                 }
                     /// This indicates an array access
-                else if (tokens[0] == "select") {
-                    if (tokens_size == 2) { /// It means that we will read array label from the tokens, but the value index is read from the eval_table.
+                else if (tokens[0] == "select")
+                {
+                    if (tokens_size == 2)
+                    { /// It means that we will read array label from the tokens, but the value index is read from the eval_table.
                         /// because the index in this case is computed during previous instructions.
                         string top = pending.top();
                         top = top.substr(1, top.size());
@@ -368,11 +434,15 @@ private:
                         op1_indx = vars_indx[op1_lbl];
                         op1_tmp = "$r" + to_string(op1_indx);
                         pending.push(op1_tmp);
-                    } else {
-                        if (is_op1) {
+                    }
+                    else
+                    {
+                        if (is_op1)
+                        {
                             /// The label of operand is created by concatentaing its array label and its index within the array.
                             string op1_lbl = tokens[1] + "\'" + to_string(arr_indx[tokens[2]]);
-                            if (vars_indx.find(op1_lbl) == vars_indx.end()) {
+                            if (vars_indx.find(op1_lbl) == vars_indx.end())
+                            {
                                 op1_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[2]]);
                             }
                             is_op1 = false;
@@ -380,41 +450,68 @@ private:
                             op1_tmp = "$r" + to_string(op1_indx);
                             pending.push(op1_tmp);
                             res_indx = op1_indx;
-                        } else {
+                        }
+                        else
+                        {
                             /// The label of operand is created by concatentaing its array label and its index within the array.
                             string op2_lbl = tokens[1] + "\'" + to_string(arr_indx[tokens[2]]);
-                            if (vars_indx.find(op2_lbl) == vars_indx.end()) {
+                            if (vars_indx.find(op2_lbl) == vars_indx.end())
+                            {
                                 op2_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[2]]);
                             }
                             is_op1 = true;
                             op2_indx = vars_indx[op2_lbl];
                             op2_tmp = "$r" + to_string(op2_indx);
                             /// Switch the order of the operands, so we pop the first operand then the second.
-                            //string tmp_op1 = pending.top();
-                            //pending.pop();
+                            // string tmp_op1 = pending.top();
+                            // pending.pop();
                             pending.push(op2_tmp);
-                            //pending.push(tmp_op1);
+                            // pending.push(tmp_op1);
                             res_indx = op2_indx;
                         }
                     }
                     continue;
-                } else if (isStringEmptyOrWhitespace(tokens[0])) {
+                }
+                else if (isStringEmptyOrWhitespace(tokens[0]))
+                {
                     continue;
-                } else if (tokens[0] == "store") {
+                }
+                else if (tokens[0] == "store")
+                {
+
+                    string nickname = removeSpaces(strip_parentheses(inst[inst.size() - 1]));
                     string indx_lbl;
-                    if (first_store_inst) { /// The firsr store instruction we encounter is the one that has the array label in which we store the result.
+
+                    if (first_store_inst)
+                    { /// The firsr store instruction we encounter is the one that has the array label in which we store the result.
                         /// next store instructions points to an index that is not an array, but to an index in another array (which is the array
                         /// referenced by the first store instruction)
 
+                        array_nickname[nickname] = tokens[1];
+
                         /// Toggle the flag
                         first_store_inst = false;
-                        /// Ge the target array label in which we will store the result
-                        store_array_lbl = tokens[1];
+                        if (tokens.size() == 2)
+                        {
+                            store_array_lbl = last_array_lbl;
+                            indx_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[1]]);
+                        }
+                        else
+                        {
+                            /// Ge the target array label in which we will store the result
+                            store_array_lbl = array_nickname[tokens[1]];
+                            /// Get the index (in the target array) at which we store the result.
+                            indx_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[2]]);
+                        }
+                    }
+                    else
+                    {
+                        array_nickname[nickname] = store_array_lbl;
                         /// Get the index (in the target array) at which we store the result.
-                        indx_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[2]]);
-                    } else {
-                        /// Get the index (in the target array) at which we store the result.
-                        indx_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[2]]);
+                        if (tokens.size() == 3)
+                            indx_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[2]]);
+                        else
+                            indx_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[1]]);
                     }
                     /// Get the last computation in the pending stack
                     string top = pending.top();
@@ -432,16 +529,20 @@ private:
                     eval_table[left] = eval_table[right];
 
                     continue;
-                } else {
+                }
+                else
+                {
                     cout << "Unknown token >> " << tokens[0] << endl;
                     exit(4);
                 }
                 /// If the instruction size is 3, then we have operator, operand 1, operand 2
-                if (tokens_size == 3) {
+                if (tokens_size == 3)
+                {
                     /// Read operand 1
                     op1_tmp = tokens[1];
                     /// If it starts with #, then it is a constant value encoded in binary (e.g., #b010101).
-                    if (op1_tmp[0] == '#') {
+                    if (op1_tmp[0] == '#')
+                    {
                         /// skip the first two chars (# and b) and convert the binary into integer.
                         op1 = stoi(op1_tmp.substr(2, op1_tmp.size()), nullptr, 2);
                         op1_indx = vars_cntr;
@@ -452,144 +553,198 @@ private:
                     }
                         /// If it starts with ' (single quotes), then it is an index to a value. Its index is retrieved
                         /// from the vars_indx map, or store it in the vars_indx map.
-                    else if (op1_tmp[0] == '\'') {
+                    else if (op1_tmp[0] == '\'')
+                    {
                         /// iterate over the map to find the op1
                         it = vars_indx.find(op1_tmp);
                         /// If it is not stored in the map, then ...
-                        if (it == vars_indx.end()) {
+                        if (it == vars_indx.end())
+                        {
                             /// ... get its value, and ...
-                            if (op1_tmp.size() > 2) {
+                            if (op1_tmp.size() > 2)
+                            {
                                 op1_indx = stoi(op1_tmp.substr(2, op1_tmp.size())) + vars_cntr;
-                            } else {
+                            }
+                            else
+                            {
                                 op1_indx = stoi(op1_tmp.substr(1, op1_tmp.size())) + vars_cntr;
                             }
                             /// ... store it in the map.
                             vars_cntr++;
                             vars_indx[op1_tmp] = op1_indx;
-                        } else {
+                        }
+                        else
+                        {
                             /// If found, retrieve its index value
                             op1_indx = vars_indx[op1_tmp];
                         }
                     }
                         /// If op1_tmp is all chars, then it is a variable name.
-                    else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch) { return isalpha(ch); })) {
+                    else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch)
+                    { return isalpha(ch); }))
+                    {
                         /// Iterate over the vars_indx to retrieve its index.
                         it = vars_indx.find(op1_tmp);
                         /// If it is not found, then store it in the vars_indx map.
-                        if (it == vars_indx.end()) {
+                        if (it == vars_indx.end())
+                        {
                             op1_indx = vars_cntr;
                             vars_cntr++;
                             vars_indx[op1_tmp] = op1_indx;
                             cir_print += "$r" + to_string(op1_indx) + " := " + op1_tmp + "\n";
-                        } else { /// if it is found, retrieve its index.
+                        }
+                        else
+                        { /// if it is found, retrieve its index.
                             op1_indx = vars_indx[op1_tmp];
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Unknown operand1! >> " << op1_tmp << endl;
                         exit(3);
                     }
 
                     op2_tmp = tokens[2];
-                    if (op2_tmp[0] == '#') {
+                    if (op2_tmp[0] == '#')
+                    {
                         op2 = stoi(op2_tmp.substr(2, op2_tmp.size()), nullptr, 2);
                         op2_indx = vars_cntr;
                         vars_cntr++;
                         cir_print += "$r" + to_string(op2_indx) + " := " + to_string(op2) + "\n";
                         string tmp = "r" + to_string(op2_indx);
                         eval_table[tmp] = op2;
-                    } else if (op2_tmp[0] == '\'') {
+                    }
+                    else if (op2_tmp[0] == '\'')
+                    {
                         it = vars_indx.find(op2_tmp);
-                        if (it == vars_indx.end()) {
-                            if (op2_tmp.size() > 2) {
+                        if (it == vars_indx.end())
+                        {
+                            if (op2_tmp.size() > 2)
+                            {
                                 op2_indx = stoi(op2_tmp.substr(2, op2_tmp.size())) + vars_cntr;
-                            } else {
+                            }
+                            else
+                            {
                                 op2_indx = stoi(op2_tmp.substr(1, op2_tmp.size())) + vars_cntr;
                             }
                             vars_cntr++;
                             vars_indx[op2_tmp] = op2_indx;
-                        } else {
+                        }
+                        else
+                        {
                             op2_indx = vars_indx[op2_tmp];
                         }
-                    } else if (all_of(op2_tmp.begin(), op2_tmp.end(), [](char ch) { return isalpha(ch); })) {
+                    }
+                    else if (all_of(op2_tmp.begin(), op2_tmp.end(), [](char ch)
+                    { return isalpha(ch); }))
+                    {
                         it = vars_indx.find(op2_tmp);
-                        if (it == vars_indx.end()) {
+                        if (it == vars_indx.end())
+                        {
                             op2_indx = vars_cntr;
                             vars_cntr++;
                             vars_indx[op2_tmp] = op2_indx;
                             cir_print += "$r" + to_string(op2_indx) + " := " + op2_tmp + "\n";
-                        } else {
+                        }
+                        else
+                        {
                             op2_indx = vars_indx[op2_tmp];
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Unknown operand2! >> " << op2_tmp << endl;
                         exit(3);
                     }
                     res_indx = vars_cntr;
-                    cir_print += "$r" + to_string(res_indx) + " := r" + to_string(op1_indx) + " " + op + " r" +
-                                 to_string(op2_indx) + "\n";
+                    cir_print += "$r" + to_string(res_indx) + " := r" + to_string(op1_indx) + " " + op + " r" + to_string(op2_indx) + "\n";
 
                     string tmp1 = "r" + to_string(res_indx);
                     string tmp2 = "r" + to_string(op1_indx);
                     string tmp3 = "r" + to_string(op2_indx);
 
-                    if (eval_table.find(tmp2) != eval_table.end()) {
-                        if (eval_table.find(tmp3) != eval_table.end()) {
+                    if (eval_table.find(tmp2) != eval_table.end())
+                    {
+                        if (eval_table.find(tmp3) != eval_table.end())
+                        {
                             if (op == "+")
                                 eval_table[tmp1] = eval_table[tmp2] + eval_table[tmp3];
                             else if (op == "*")
                                 eval_table[tmp1] = eval_table[tmp2] * eval_table[tmp3];
                             else if (op == "-")
                                 eval_table[tmp1] = eval_table[tmp2] - eval_table[tmp3];
-                        } else {
+                        }
+                        else
+                        {
                             cout << tmp3 << " (op2 --- Line 618) does not exist in eval_table" << endl;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << tmp2 << " (op1 --- Line 623) does not exist in eval_table" << endl;
                     }
                 }
                     /// If the instruction size is 2, then we have operator, operand 1 only, operand 2 will be popped
                     /// from the pending stack
-                else if (tokens_size == 2) {
+                else if (tokens_size == 2)
+                {
                     /// read operand1
                     op1_tmp = tokens[1];
                     /// If it starts with #, then it is a constant value encoded in binary (e.g., #b010101).
-                    if (op1_tmp[0] == '#') {
+                    if (op1_tmp[0] == '#')
+                    {
                         op1 = stoi(op1_tmp.substr(2, op1_tmp.size()), nullptr, 2);
                         op1_indx = vars_cntr;
                         vars_cntr++;
                         cir_print += "$r" + to_string(op1_indx) + " := " + to_string(op1) + "\n";
                         string tmp = "r" + to_string(op1_indx);
                         eval_table[tmp] = op1;
-                    } else if (op1_tmp[0] == '\'') {
+                    }
+                    else if (op1_tmp[0] == '\'')
+                    {
                         /// If it starts with ', it is an index
                         it = vars_indx.find(op1_tmp);
-                        if (it == vars_indx.end()) {
-                            if (op1_tmp.size() > 2) {
+                        if (it == vars_indx.end())
+                        {
+                            if (op1_tmp.size() > 2)
+                            {
                                 op1_indx = stoi(op1_tmp.substr(2, op1_tmp.size())) + vars_cntr;
-                            } else {
+                            }
+                            else
+                            {
                                 op1_indx = stoi(op1_tmp.substr(1, op1_tmp.size())) + vars_cntr;
                             }
                             vars_cntr++;
                             vars_indx[op1_tmp] = op1_indx;
-                        } else {
+                        }
+                        else
+                        {
                             op1_indx = vars_indx[op1_tmp];
                         }
                     } /// If it is all chars, then it is a variable
-                    else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch) { return isalpha(ch); })) {
+                    else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch)
+                    { return isalpha(ch); }))
+                    {
                         it = vars_indx.find(op1_tmp);
-                        if (it == vars_indx.end()) {
+                        if (it == vars_indx.end())
+                        {
                             op1_indx = vars_cntr;
                             vars_cntr++;
                             vars_indx[op1_tmp] = op1_indx;
                             cir_print += "$r" + to_string(op1_indx) + " := " + op1_tmp + "\n";
-                        } else {
+                        }
+                        else
+                        {
                             op1_indx = vars_indx[op1_tmp];
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Unknown operand1! >> " << op1_tmp << endl;
                         exit(3);
                     }
-                    if (pending.empty()) {
+                    if (pending.empty())
+                    {
                         break;
                     }
                     /// get the result of the previous operation from the pending stack.
@@ -598,66 +753,83 @@ private:
                     pending.pop();
                     /***This is part was errorouns!*/
                     /// read from the letter "r" until the ":" symbol
-                    ///next = next.substr(1, next.find(":"));
+                    /// next = next.substr(1, next.find(":"));
                     /***END*/
-                    //Trim the $ and r
+                    // Trim the $ and r
                     next = next.substr(1, next.size());
                     res_indx = vars_cntr;
-                    cir_print +=
-                            "$r" + to_string(res_indx) + " := " + next + " " + op + " r" + to_string(op1_indx) + "\n";
+                    cir_print += "$r" + to_string(res_indx) + " := " + "r" + to_string(op1_indx) + " " + op +  " " + next + "\n";
 
                     string tmp1 = "r" + to_string(res_indx);
                     string tmp2 = next; //"r" + next;
                     string tmp3 = "r" + to_string(op1_indx);
 
-                    if (eval_table.find(tmp2) != eval_table.end()) {
-                        if (eval_table.find(tmp3) != eval_table.end()) {
+                    if (eval_table.find(tmp2) != eval_table.end())
+                    {
+                        if (eval_table.find(tmp3) != eval_table.end())
+                        {
                             if (op == "+")
                                 eval_table[tmp1] = eval_table[tmp2] + eval_table[tmp3];
                             else if (op == "*")
                                 eval_table[tmp1] = eval_table[tmp2] * eval_table[tmp3];
                             else if (op == "-")
-                                eval_table[tmp1] = eval_table[tmp2] - eval_table[tmp3];
-                        } else {
+                                eval_table[tmp1] = eval_table[tmp3] - eval_table[tmp2];
+                        }
+                        else
+                        {
                             cout << tmp3 << " (op1 -- Line 715) does not exist in eval_table" << endl;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << tmp2 << " (op2 -- Line 720) does not exist in eval_table" << endl;
                     }
                 } /// it is either an operation (bvadd, bvmul, bvsub) or a result index
-                else if (tokens_size == 1) {
+                else if (tokens_size == 1)
+                {
                     /// the operands are the top two elements in stack
                     string token = tokens[0];
-                    if (token == "bvmul") {
-                        if (pending.size() >= 2) {
+                    if (token == "bvmul")
+                    {
+                        if (pending.size() >= 2)
+                        {
                             op1_tmp = pending.top();
                             pending.pop();
                             op2_tmp = pending.top();
                             pending.pop();
                             res_indx = vars_cntr;
-                            cir_print +=
-                                    "$r" + to_string(res_indx) + " := " + op1_tmp.substr(1, op1_tmp.size()) + " * " +
-                                    op2_tmp.substr(1, op2_tmp.size()) + "\n";
+                            cir_print += "$r" + to_string(res_indx) + " := " + op1_tmp.substr(1, op1_tmp.size()) + " * " + op2_tmp.substr(1, op2_tmp.size()) + "\n";
 
                             string tmp1 = "r" + to_string(res_indx);
                             string tmp2 = op1_tmp.substr(1, op1_tmp.size());
                             string tmp3 = op2_tmp.substr(1, op2_tmp.size());
 
-                            if (eval_table.find(tmp2) != eval_table.end()) {
-                                if (eval_table.find(tmp3) != eval_table.end()) {
+                            if (eval_table.find(tmp2) != eval_table.end())
+                            {
+                                if (eval_table.find(tmp3) != eval_table.end())
+                                {
 
                                     eval_table[tmp1] = eval_table[tmp2] * eval_table[tmp3];
-                                } else {
+                                }
+                                else
+                                {
                                     cout << tmp3 << " (op1 --- Line 751) does not exist in eval_table" << endl;
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 cout << tmp2 << " (op2 --- Line 756) does not exist in eval_table" << endl;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             cout << "There isn't enough operands in the pending stack for bvmul!" << endl;
                         }
-                    } else if (token == "bvadd") {
-                        if (pending.size() >= 2) {
+                    }
+                    else if (token == "bvadd")
+                    {
+                        if (pending.size() >= 2)
+                        {
                             op1_tmp = pending.top();
                             pending.pop();
                             op2_tmp = pending.top();
@@ -671,21 +843,32 @@ private:
                             string tmp2 = op1_tmp.substr(1, op1_tmp.size());
                             string tmp3 = op2_tmp.substr(1, op2_tmp.size());
 
-                            if (eval_table.find(tmp2) != eval_table.end()) {
-                                if (eval_table.find(tmp3) != eval_table.end()) {
+                            if (eval_table.find(tmp2) != eval_table.end())
+                            {
+                                if (eval_table.find(tmp3) != eval_table.end())
+                                {
 
                                     eval_table[tmp1] = eval_table[tmp2] + eval_table[tmp3];
-                                } else {
+                                }
+                                else
+                                {
                                     cout << tmp3 << " (op2 -- Line 790) does not exist in eval_table" << endl;
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 cout << tmp2 << " (op1 -- Line 793) does not exist in eval_table" << endl;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             cout << "There isn't enough operands in the pending stack for bvadd!" << endl;
                         }
-                    } else if (token == "bvsub") {
-                        if (pending.size() >= 2) {
+                    }
+                    else if (token == "bvsub")
+                    {
+                        if (pending.size() >= 2)
+                        {
                             op1_tmp = pending.top();
                             pending.pop();
                             op2_tmp = pending.top();
@@ -699,24 +882,36 @@ private:
                             string tmp2 = op1_tmp.substr(1, op1_tmp.size());
                             string tmp3 = op2_tmp.substr(1, op2_tmp.size());
 
-                            if (eval_table.find(tmp2) != eval_table.end()) {
-                                if (eval_table.find(tmp3) != eval_table.end()) {
+                            if (eval_table.find(tmp2) != eval_table.end())
+                            {
+                                if (eval_table.find(tmp3) != eval_table.end())
+                                {
 
                                     eval_table[tmp1] = eval_table[tmp2] - eval_table[tmp3];
-                                } else {
+                                }
+                                else
+                                {
                                     cout << tmp3 << " (op2 --- Line 827) does not exist in eval_table" << endl;
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 cout << tmp2 << " (op1 --- Line 830) does not exist in eval_table" << endl;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             cout << "There isn't enough operands in the pending stack for bvsub!" << endl;
                         }
-                    } else if (token[0] == '\'') {
+                    }
+                    else if (token[0] == '\'')
+                    {
                         vars_indx[token] = res_indx;
                         vars_cntr--;
                     }
-                } else {
+                }
+                else
+                {
                     cout << "Skipping >> " << op1_tmp << endl;
                     continue;
                 }
@@ -725,7 +920,8 @@ private:
                 pending.push(pen);
                 vars_cntr++;
 
-                if (next_is_indx) {
+                if (next_is_indx)
+                {
                     next_is_indx = false;
                     string name = "r" + to_string(res_indx);
                     arr_indx[indx_lbl_arr_indx] = eval_table[name];
@@ -742,7 +938,8 @@ private:
      * Parse the tuple block.
      * @param filename the IR file name.
      * */
-    string parse_tuple(const string &filename) {
+    string parse_tuple(const string &filename)
+    {
 
         /// Reset op1 turn to parse the select operation.
         is_op1 = true;
@@ -750,7 +947,8 @@ private:
         stack<string> st;
         /// Read the IR output and return the code which starts with "(tuple"
         string zok_ir = readTuple(filename);
-        if (zok_ir[0] == ' ') {
+        if (zok_ir[0] == ' ')
+        {
             zok_ir.erase(0);
         }
         // cout << zok_ir << endl;
@@ -762,17 +960,21 @@ private:
         /// previous computation. The result of the previous computation is stored in this stack.
         stack<string> pending;
         /// Loop over the code and parse strip the parentheses
-        for (char const c: zok_ir) {
-            if (c == '(') { /// The start of an operation
+        for (char const c : zok_ir)
+        {
+            if (c == '(')
+            { /// The start of an operation
                 st.push(string(&c, 1));
                 continue;
             }
-            if (st.empty()) {
+            if (st.empty())
+            {
                 break;
             }
             st.top() += c;
 
-            if (c == ')') {
+            if (c == ')')
+            {
                 bool is_select = false;
                 /// The end of an operation
                 /// get an instruction
@@ -786,15 +988,24 @@ private:
                 /// The first token is the operation
                 string token = tokens[0];
                 int tokens_size = tokens.size();
-                if (token == "bvadd") {
+                if (token == "bvadd")
+                {
                     op = "+";
-                } else if (token == "bvmul") {
+                }
+                else if (token == "bvmul")
+                {
                     op = "*";
-                } else if (token == "bvsub") {
+                }
+                else if (token == "bvsub")
+                {
                     op = "-";
-                } else if (token == "tuple") {
+                }
+                else if (token == "tuple")
+                {
                     break;
-                } else if (token == "select") {
+                }
+                else if (token == "select")
+                {
                     // *********************************************************** //
                     //                  continue;                                  //
                     // Earlier, we used to skip this operation.                    //
@@ -802,8 +1013,8 @@ private:
                     // for programs that had been parsed sucessfully               //
                     // *********************************************************** //
                     is_select = true;
-                    if (tokens_size ==
-                        2) { /// It means that we will read array label from the tokens, but the value index is read from the eval_table.
+                    if (tokens_size == 2)
+                    { /// It means that we will read array label from the tokens, but the value index is read from the eval_table.
                         /// because the index in this case is computed during previous instructions.
                         string top = pending.top();
                         top = top.substr(1, top.size());
@@ -813,11 +1024,15 @@ private:
                         op1_indx = vars_indx[op1_lbl];
                         op1_tmp = "$r" + to_string(op1_indx);
                         pending.push(op1_tmp);
-                    } else {
-                        if (is_op1) {
+                    }
+                    else
+                    {
+                        if (is_op1)
+                        {
                             /// The label of operand is created by concatentaing its array label and its index within the array.
                             string op1_lbl = tokens[1] + "\'" + to_string(arr_indx[tokens[2]]);
-                            if (vars_indx.find(op1_lbl) == vars_indx.end()) {
+                            if (vars_indx.find(op1_lbl) == vars_indx.end())
+                            {
                                 op1_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[2]]);
                             }
                             is_op1 = false;
@@ -825,10 +1040,13 @@ private:
                             op1_tmp = "$r" + to_string(op1_indx);
                             pending.push(op1_tmp);
                             res_indx = op1_indx;
-                        } else {
+                        }
+                        else
+                        {
                             /// The label of operand is created by concatentaing its array label and its index within the array.
                             string op2_lbl = tokens[1] + "\'" + to_string(arr_indx[tokens[2]]);
-                            if (vars_indx.find(op2_lbl) == vars_indx.end()) {
+                            if (vars_indx.find(op2_lbl) == vars_indx.end())
+                            {
                                 op2_lbl = store_array_lbl + "\'" + to_string(arr_indx[tokens[2]]);
                             }
                             is_op1 = true;
@@ -845,78 +1063,117 @@ private:
                         }
                     }
                     continue;
-                } else if (token == "=" || token == "not" || token == "ite") {
+                }
+                else if (token == "=" || token == "not" || token == "ite")
+                {
                     ite_flg = 1;
-                } else {
+                }
+                else
+                {
                     cout << "Unknown operand >> " << token << endl;
                     exit(2);
                 }
                 /// if we have operation operand1 operand2
-                if (tokens.size() == 3 && !ite_flg) {
+                if (tokens.size() == 3 && !ite_flg)
+                {
                     op1_tmp = tokens[1]; /// get the first operand
                     op2_tmp = tokens[2]; /// get the second operand
-                    if (op1_tmp[0] == '#') { /// if is starts with #, it means that is a value encoded in binary
+                    if (op1_tmp[0] == '#')
+                    { /// if is starts with #, it means that is a value encoded in binary
                         /// convert the binary to integer then to string
                         op1 = stoi(op1_tmp.substr(2, op1_tmp.size()), nullptr, 2);
                         op1_indx = vars_cntr++;
                         cir_print += "$r" + to_string(op1_indx) + " := " + to_string(op1) + "\n";
-                    } else if (op1_tmp[0] == '\'') {
+                    }
+                    else if (op1_tmp[0] == '\'')
+                    {
                         it = vars_indx.find(op1_tmp);
-                        if (it == vars_indx.end()) {
-                            if (op1_tmp.size() > 2) {
+                        if (it == vars_indx.end())
+                        {
+                            if (op1_tmp.size() > 2)
+                            {
                                 op1_indx = stoi(op1_tmp.substr(2, op1_tmp.size())) + vars_cntr;
-                            } else {
+                            }
+                            else
+                            {
                                 op1_indx = stoi(op1_tmp.substr(1, op1_tmp.size())) + vars_cntr;
                             }
                             vars_cntr++;
                             vars_indx[op1_tmp] = op1_indx;
-                        } else {
+                        }
+                        else
+                        {
                             op1_indx = vars_indx[op1_tmp];
                         }
-                    } else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch) { return isalpha(ch); })) {
+                    }
+                    else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch)
+                    { return isalpha(ch); }))
+                    {
                         it = vars_indx.find(op1_tmp);
-                        if (it == vars_indx.end()) {
+                        if (it == vars_indx.end())
+                        {
                             op1_indx = vars_cntr;
                             vars_cntr++;
                             vars_indx[op1_tmp] = op1_indx;
                             cir_print += "$r" + to_string(op1_indx) + " := " + op1_tmp + "\n";
-                        } else {
+                        }
+                        else
+                        {
                             op1_indx = vars_indx[op1_tmp];
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Unknown operand1 >> " << op1_tmp << endl;
                         exit(4);
                     }
 
-                    if (op2_tmp[0] == '#') { /// if is starts with #, it means that is a value encoded in binary
+                    if (op2_tmp[0] == '#')
+                    { /// if is starts with #, it means that is a value encoded in binary
                         /// convert the binary to integer then to string
                         op2 = stoi(op2_tmp.substr(2, op2_tmp.size()), nullptr, 2);
                         op2_indx = vars_cntr++;
                         cir_print += "$r" + to_string(op2_indx) + " := " + to_string(op2) + "\n";
-                    } else if (op2_tmp[0] == '\'') {
+                    }
+                    else if (op2_tmp[0] == '\'')
+                    {
                         it = vars_indx.find(op2_tmp);
-                        if (it == vars_indx.end()) {
-                            if (op2_tmp.size() > 2) {
+                        if (it == vars_indx.end())
+                        {
+                            if (op2_tmp.size() > 2)
+                            {
                                 op2_indx = stoi(op2_tmp.substr(2, op2_tmp.size())) + vars_cntr;
-                            } else {
+                            }
+                            else
+                            {
                                 op2_indx = stoi(op2_tmp.substr(1, op2_tmp.size())) + vars_cntr;
                             }
                             vars_cntr++;
                             vars_indx[op2_tmp] = op2_indx;
-                        } else {
+                        }
+                        else
+                        {
                             op2_indx = vars_indx[op2_tmp];
                         }
-                    } else if (all_of(op2_tmp.begin(), op2_tmp.end(), [](char ch) { return isalpha(ch); })) {
+                    }
+                    else if (all_of(op2_tmp.begin(), op2_tmp.end(), [](char ch)
+                    { return isalpha(ch); }))
+                    {
                         it = vars_indx.find(op2_tmp);
-                        if (it == vars_indx.end()) {
+                        if (it == vars_indx.end())
+                        {
                             op2_indx = vars_cntr;
                             vars_cntr++;
                             vars_indx[op2_tmp] = op2_indx;
                             cir_print += "$r" + to_string(op2_indx) + " := " + op2_tmp + "\n";
-                        } else {
+                        }
+                        else
+                        {
                             op2_indx = vars_indx[op2_tmp];
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Unknown operand2 >> " << op2_tmp << endl;
                         exit(5);
                     }
@@ -931,51 +1188,69 @@ private:
                                  " r" + to_string(op2_indx) + "\n";
                 }
                     /// Otherwise if we have operation operand1, we get the second operand from the stack.
-                else if (tokens.size() == 2) {
+                else if (tokens.size() == 2)
+                {
                     /// read operand1
                     string op1_tmp = tokens[1];
-                    if (op1_tmp[0] == '#') { /// if is starts with #, it means that is a value encoded in binary
+                    if (op1_tmp[0] == '#')
+                    { /// if is starts with #, it means that is a value encoded in binary
                         /// convert the binary to integer then to string
                         op1 = stoi(op1_tmp.substr(2, op1_tmp.size()), nullptr, 2);
                         op1_indx = vars_cntr;
                         vars_cntr++;
                         cir_print += "$r" + to_string(op1_indx) + " := " + to_string(op1) + "\n";
                     } /// If it starts with ', then it is an index.
-                    else if (op1_tmp[0] == '\'') {
+                    else if (op1_tmp[0] == '\'')
+                    {
                         /// Iterate over the vars_indx to get op1 index
                         it = vars_indx.find(op1_tmp);
                         /// If it is not found, set its index and store it in vars_indx.
-                        if (it == vars_indx.end()) {
-                            if (op1_tmp.size() > 2) {
+                        if (it == vars_indx.end())
+                        {
+                            if (op1_tmp.size() > 2)
+                            {
                                 op1_indx = stoi(op1_tmp.substr(2, op1_tmp.size())) + vars_cntr;
-                            } else {
+                            }
+                            else
+                            {
                                 op1_indx = stoi(op1_tmp.substr(1, op1_tmp.size())) + vars_cntr;
                             }
                             vars_cntr++;
                             vars_indx[op1_tmp] = op1_indx;
-                        } else {
+                        }
+                        else
+                        {
                             /// If it is found, the retrieve its index.
                             op1_indx = vars_indx[op1_tmp];
                         }
                         /// If op1_tmp is all chars, then it is a variable name.
-                    } else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch) { return isalpha(ch); })) {
+                    }
+                    else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch)
+                    { return isalpha(ch); }))
+                    {
                         /// Iterate over the vars_indx map, if not found, set its index and store it in the vars_indx.
                         it = vars_indx.find(op1_tmp);
-                        if (it == vars_indx.end()) {
+                        if (it == vars_indx.end())
+                        {
                             op1_indx = vars_cntr;
                             vars_cntr++;
                             vars_indx[op1_tmp] = op1_indx;
                             cir_print += "$r" + to_string(op1_indx) + " := " + op1_tmp + "\n";
-                        } else { /// if found, retrieve its index
+                        }
+                        else
+                        { /// if found, retrieve its index
                             op1_indx = vars_indx[op1_tmp];
                         }
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Unkown operand1! >> " << op1_tmp << endl;
                         exit(3);
                     }
                     eqn += op;
                     eqn += op1;
-                    if (pending.empty()) {
+                    if (pending.empty())
+                    {
                         break;
                     }
                     /// get the result of the previous operation from the pending stack.
@@ -985,11 +1260,15 @@ private:
                     next = next.substr(1, next.find(":"));
                     cir_print +=
                             "$r" + to_string(vars_cntr) + " := " + next + " " + op + " r" + to_string(op1_indx) + "\n";
-                } else if (tokens.size() == 1 || ite_flg) {
+                }
+                else if (tokens.size() == 1 || ite_flg)
+                {
                     /// it is either an operation (bvadd, bvmul, bvsub) or a result index
                     string token = tokens[0];
-                    if (token == "bvmul") {
-                        if (pending.size() >= 2) {
+                    if (token == "bvmul")
+                    {
+                        if (pending.size() >= 2)
+                        {
                             op1_tmp = pending.top();
                             pending.pop();
                             op2_tmp = pending.top();
@@ -998,11 +1277,16 @@ private:
                             cir_print +=
                                     "$r" + to_string(res_indx) + " := " + op1_tmp.substr(1, op1_tmp.size()) + " * " +
                                     op2_tmp.substr(1, op2_tmp.size()) + "\n";
-                        } else {
+                        }
+                        else
+                        {
                             cout << "There isn't enough operands in the pending stack for bvmul!" << endl;
                         }
-                    } else if (token == "bvadd") {
-                        if (pending.size() >= 2) {
+                    }
+                    else if (token == "bvadd")
+                    {
+                        if (pending.size() >= 2)
+                        {
                             op1_tmp = pending.top();
                             pending.pop();
                             op2_tmp = pending.top();
@@ -1011,11 +1295,16 @@ private:
                             cir_print +=
                                     "$r" + to_string(res_indx) + " := " + op1_tmp.substr(1, op1_tmp.size()) + " + " +
                                     op2_tmp.substr(1, op2_tmp.size()) + "\n";
-                        } else {
+                        }
+                        else
+                        {
                             cout << "There isn't enough operands in the pending stack for bvadd!" << endl;
                         }
-                    } else if (token == "bvsub") {
-                        if (pending.size() >= 2) {
+                    }
+                    else if (token == "bvsub")
+                    {
+                        if (pending.size() >= 2)
+                        {
                             op1_tmp = pending.top();
                             pending.pop();
                             op2_tmp = pending.top();
@@ -1024,10 +1313,14 @@ private:
                             cir_print +=
                                     "$r" + to_string(res_indx) + " := " + op1_tmp.substr(1, op1_tmp.size()) + " - " +
                                     op2_tmp.substr(1, op2_tmp.size()) + "\n";
-                        } else {
+                        }
+                        else
+                        {
                             cout << "There isn't enough operands in the pending stack for bvsub!" << endl;
                         }
-                    } else if (token == "=") {
+                    }
+                    else if (token == "=")
+                    {
                         assert("There isn't enough operands in the pending stack for \"=\"!" && pending.size() >= 2);
                         op1_tmp = pending.top().substr(1, op1_tmp.size());
                         pending.pop();
@@ -1047,9 +1340,11 @@ private:
                         string nxt_res_indx;
                         string base_indx = res_indx;
 
-                        while (exp > 0) {
+                        while (exp > 0)
+                        {
                             nxt_res_indx = "r" + to_string(vars_cntr);
-                            if (exp % 2 != 0) {
+                            if (exp % 2 != 0)
+                            {
                                 cir_print += "$" + nxt_res_indx + " := " + tmp + " * " + base_indx + "\n";
                                 /// skip adding it to the eval_table
                                 tmp = nxt_res_indx;
@@ -1068,7 +1363,9 @@ private:
                         cir_print += "$" + exp_res + " := " + tmp + "\n";
                         // eval_table[res_indx] = -1; // Just a random value ...
                         ite_flg = 0;
-                    } else if (token == "not") {
+                    }
+                    else if (token == "not")
+                    {
                         assert("There isn't enough operands in the pending stack for not!" && pending.size() >= 1);
                         op1_tmp = pending.top();
                         op1_tmp = op1_tmp.substr(1, op1_tmp.size());
@@ -1083,7 +1380,9 @@ private:
                         res_indx_tmp = "r" + to_string(vars_cntr);
                         cir_print += "$" + res_indx_tmp + " := " + tmp + " - " + op1_tmp + "\n";
                         ite_flg = 0;
-                    } else if (token == "ite") {
+                    }
+                    else if (token == "ite")
+                    {
                         /**
                          * cond is computed by Fermat's little theorem, gives encrypted zero (equal) or encrypted one (unequal).
                          *      see -> https://github.com/microsoft/SEAL/issues/162
@@ -1101,68 +1400,102 @@ private:
 
                         op1_tmp = tokens[1]; /// get the first operand
                         op2_tmp = tokens[2]; /// get the second operand
-                        if (op1_tmp[0] == '#') { /// if is starts with #, it means that is a value encoded in binary
+                        if (op1_tmp[0] == '#')
+                        { /// if is starts with #, it means that is a value encoded in binary
                             /// convert the binary to integer then to string
                             op1 = stoi(op1_tmp.substr(2, op1_tmp.size()), nullptr, 2);
                             op1_indx = vars_cntr++;
                             cir_print += "$r" + to_string(op1_indx) + " := " + to_string(op1) + "\n";
-                        } else if (op1_tmp[0] == '\'') {
+                        }
+                        else if (op1_tmp[0] == '\'')
+                        {
                             it = vars_indx.find(op1_tmp);
-                            if (it == vars_indx.end()) {
-                                if (op1_tmp.size() > 2) {
+                            if (it == vars_indx.end())
+                            {
+                                if (op1_tmp.size() > 2)
+                                {
                                     op1_indx = stoi(op1_tmp.substr(2, op1_tmp.size())) + vars_cntr;
-                                } else {
+                                }
+                                else
+                                {
                                     op1_indx = stoi(op1_tmp.substr(1, op1_tmp.size())) + vars_cntr;
                                 }
                                 vars_cntr++;
                                 vars_indx[op1_tmp] = op1_indx;
-                            } else {
+                            }
+                            else
+                            {
                                 op1_indx = vars_indx[op1_tmp];
                             }
-                        } else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch) { return isalpha(ch); })) {
+                        }
+                        else if (all_of(op1_tmp.begin(), op1_tmp.end(), [](char ch)
+                        { return isalpha(ch); }))
+                        {
                             it = vars_indx.find(op1_tmp);
-                            if (it == vars_indx.end()) {
+                            if (it == vars_indx.end())
+                            {
                                 op1_indx = vars_cntr;
                                 vars_cntr++;
                                 vars_indx[op1_tmp] = op1_indx;
                                 cir_print += "$r" + to_string(op1_indx) + " := " + op1_tmp + "\n";
-                            } else {
+                            }
+                            else
+                            {
                                 op1_indx = vars_indx[op1_tmp];
                             }
-                        } else {
+                        }
+                        else
+                        {
                             cout << "Unknown operand1 >> " << op1_tmp << endl;
                             exit(4);
                         }
 
-                        if (op2_tmp[0] == '#') { /// if is starts with #, it means that is a value encoded in binary
+                        if (op2_tmp[0] == '#')
+                        { /// if is starts with #, it means that is a value encoded in binary
                             /// convert the binary to integer then to string
                             op2 = stoi(op2_tmp.substr(2, op2_tmp.size()), nullptr, 2);
                             op2_indx = vars_cntr++;
                             cir_print += "$r" + to_string(op2_indx) + " := " + to_string(op2) + "\n";
-                        } else if (op2_tmp[0] == '\'') {
+                        }
+                        else if (op2_tmp[0] == '\'')
+                        {
                             it = vars_indx.find(op2_tmp);
-                            if (it == vars_indx.end()) {
-                                if (op2_tmp.size() > 2) {
+                            if (it == vars_indx.end())
+                            {
+                                if (op2_tmp.size() > 2)
+                                {
                                     op2_indx = stoi(op2_tmp.substr(2, op2_tmp.size())) + vars_cntr;
-                                } else {
+                                }
+                                else
+                                {
                                     op2_indx = stoi(op2_tmp.substr(1, op2_tmp.size())) + vars_cntr;
                                 }
                                 vars_cntr++;
                                 vars_indx[op2_tmp] = op2_indx;
-                            } else {
+                            }
+                            else
+                            {
                                 op2_indx = vars_indx[op2_tmp];
                             }
-                        } else if (all_of(op2_tmp.begin(), op2_tmp.end(), [](char ch) { return isalpha(ch); })) {
+                        }
+                        else if (all_of(op2_tmp.begin(), op2_tmp.end(), [](char ch)
+                        { return isalpha(ch); }))
+                        {
                             it = vars_indx.find(op2_tmp);
-                            if (it == vars_indx.end()) {
+                            if (it == vars_indx.end())
+                            {
                                 op2_indx = vars_cntr;
                                 vars_cntr++;
                                 vars_indx[op2_tmp] = op2_indx;
                                 cir_print += "$r" + to_string(op2_indx) + " := " + op2_tmp + "\n";
-                            } else {
+                            }
+                            else
+                            {
                                 op2_indx = vars_indx[op2_tmp];
                             }
-                        } else {
+                        }
+                        else
+                        {
                             cout << "Unknown operand2 >> " << op2_tmp << endl;
                             exit(5);
                         }
@@ -1192,7 +1525,9 @@ private:
                         cir_print += "$" + res + " := " + iftrue + " + " + iffalse + "\n";
 
                         ite_flg = 0;
-                    } else {
+                    }
+                    else
+                    {
                         cout << "Unknown operation >> " << token << endl;
                     }
                 }
@@ -1207,11 +1542,14 @@ private:
         return cir_print;
     }
 
-    string removeSpaces(string str_in) {
+    string removeSpaces(string str_in)
+    {
         string str = str_in;
         // Iterate over the string, and remove any double spaces.
-        for (int i = 0; i < str.length(); i++) {
-            if (str[i] == ' ' && str[i + 1] == ' ') {
+        for (int i = 0; i < str.length(); i++)
+        {
+            if (str[i] == ' ' && str[i + 1] == ' ')
+            {
                 str.erase(i, 1);
             }
         }
@@ -1221,7 +1559,8 @@ private:
     }
 
 public:
-    Parser() {
+    Parser()
+    {
         vars_cntr = 2;
         res_cntr = 2;
         op = "";
@@ -1235,7 +1574,8 @@ public:
         res_indx = -1;
     }
 
-    string parse(const string &filename) {
+    string parse(const string &filename)
+    {
         string parsed_let = parse_let(filename);
         string parsed_ir = parse_tuple(filename);
         string arith_cir = parsed_let.append(parsed_ir);

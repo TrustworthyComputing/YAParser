@@ -1,0 +1,87 @@
+def dot_prod(u64[4] a, u64[4] b) -> u64:
+	
+	u64 res = 0
+    
+    	for u64 i in 0..4 do
+    		res = res + (a[i]) * (b[i])
+    	endfor
+    
+    	return res
+
+def main() -> u64[4]:
+	
+	u64 n_samples = 5
+	u64 n_features = 4
+	
+	u64[n_features] w = [10, 10, 10, 10]
+	u64 b = 0
+	
+	u64[n_features] e1 = [4, 2, 3, 1]
+	u64[n_features] e2 = [4, 4, 4, 1]
+	u64[n_features] e3 = [3, 2, 2, 0]
+	u64[n_features] e4 = [4, 2, 2, 1]
+	//u64[n_features] e5 = [4, 1, 2, 1]
+	
+
+	
+	u64 y1 = 13
+	u64 y2 = 5
+	u64 y3 = 7	
+	u64 y4 = 12
+	//u64 y5 = 11	
+	
+	u64 n_iters = 1
+	
+	u64 res = 0
+	u64 update = 0
+	u64 lr = 1
+	
+	for u64 i in 0..n_iters do
+		// First sample
+		res = dot_prod(e1, w) + b
+		update = lr * (y1 - res)
+		b = b + update
+		
+		for u64 j in 0..n_features do
+			w[j] = w[j] + update * e1[j]
+		endfor
+		
+		// Second sample
+		res = dot_prod(e2, w) + b
+		update = lr * (y2 - res)
+		b = b + update
+		
+		for u64 j in 0..n_features do
+			w[j] = w[j] + update * e2[j]
+		endfor
+		
+		// Third sample
+		res = dot_prod(e3, w) + b
+		update = lr * (y3 - res)
+		b = b + update
+		for u64 j in 0..n_features do
+			w[j] = w[j] + update * e3[j]
+		endfor
+		
+		// Fourth sample
+		res = dot_prod(e4, w) + b
+		update = lr * (y4 - res)
+		b = b + update
+		
+		for u64 j in 0..n_features do
+			w[j] = w[j] + update * e4[j]
+		endfor
+		
+		// Fifth sample
+		//res = dot_prod(e5, w) + b
+		//update = lr * (y5 + res)
+		//b = b + update
+		
+		//for u64 j in 0..n_features do
+		//	w[j] = w[j] + update * e5[j]
+		//endfor
+	endfor
+		
+	
+	return w
+	
