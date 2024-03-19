@@ -10,7 +10,7 @@ def dot_prod(u64[4] a, u64[4] b) -> u64:
 
 def main() -> u64[4]:
 	
-	u64 n_samples = 5
+	u64 n_samples = 4
 	u64 n_features = 4
 	
 	u64[n_features] w = [10, 10, 10, 10]
