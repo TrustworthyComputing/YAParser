@@ -43,3 +43,6 @@ If you want to write your program in CirC, you will need to modify it to print t
 
 # Requirements
 The project needs [Boost](https://www.boost.org/) library.
+
+## Acknowledgments
+This work was supported by the National Science Foundation (Award #2239334).
